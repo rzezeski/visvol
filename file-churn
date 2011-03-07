@@ -1,0 +1,88 @@
+#! /bin/bash
+#
+# Generate list of files modified in last 6 motnhs along with their
+# churn and commit count.  By default all files will be included.
+# Only works with git.
+# 
+#- usage:
+#-   file-churn [ --help ]
+#-              [ -s <suffix> ]
+#-              [ --lookback <lookback> ]
+#-              [ --commit-ceil <commit-ceil> ]
+#-              [ --git-path <git-path> ]
+#-              [ <path> ]
+
+usage_and_exit()
+{
+    sed -n 's/^#-// p' $0
+    exit $1
+}
+
+error()
+{
+    echo "$@" 1>&2
+    usage_and_exit 1
+}
+
+version()
+{
+    echo "$PROGRAM version $VERSION"
+}
+
+PROGRAM=$(basename $0)
+VERSION=0.1.0
+lookback="6 months ago"
+commit_ceil=12
+suffix='.*'
+path=.
+git_path=
+
+while test "$#" -gt 0
+do
+    case $1 in
+        --help)
+            usage_and_exit 0
+            ;;
+        --suffix | -s)
+            shift
+            suffix=$1
+            ;;
+        --lookback)
+            shift
+            lookback=$1
+            ;;
+        --commit-ceil)
+            shift
+            commit_ceil=$1
+            ;;
+        --git-path )
+            shift
+            git_path="-- $1"
+            ;;
+        -*)
+            error "Unrecognized option: $1"
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+
+path="$1"
+file_to_num='
+{ churn[$3] += ($1 + $2); commits[$3] += 1 }
+END {
+  for (f in churn)
+    printf "%s %d %d\n",f, churn[f], commits[f]
+}'
+
+# lines added/removed
+# remove blank lines
+# map file to churn
+# sort by most churn
+cd $path && \
+    git log --since "$lookback" --numstat --pretty=format: $git_path | \
+    grep -v '^$' | \
+    awk "$file_to_num" | \
+    sort -k2,2nr
