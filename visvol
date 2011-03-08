@@ -5,12 +5,12 @@
 # Only works with git.
 # 
 #- usage:
-#-   file-churn [ --help ]
-#-              [ -s <suffix> ]
-#-              [ --lookback <lookback> ]
-#-              [ --commit-ceil <commit-ceil> ]
-#-              [ --git-path <git-path> ]
-#-              [ <path> ]
+#-   visvol [ --help ]
+#-          [ -s <suffix> ]
+#-          [ --lookback <lookback> ]
+#-          [ --commit-ceil <commit-ceil> ]
+#-          [ --git-path <git-path> ]
+#-          [ <path> ]
 
 usage_and_exit()
 {
@@ -31,11 +31,14 @@ version()
 
 PROGRAM=$(basename $0)
 VERSION=0.1.0
+FILE_LIST=$(mktemp /tmp/$PROGRAM.XXXX)
 lookback="6 months ago"
 commit_ceil=12
 suffix='.*'
 path=.
 git_path=
+
+trap "rm -f $FILE_LIST" EXIT
 
 while test "$#" -gt 0
 do
@@ -69,6 +72,7 @@ do
     shift
 done
 
+commit_mid=$((commit_ceil/2))
 path="$1"
 file_to_num='
 { churn[$3] += ($1 + $2); commits[$3] += 1 }
@@ -81,8 +85,15 @@ END {
 # remove blank lines
 # map file to churn
 # sort by most churn
-cd $path && \
+(cd $path && \
     git log --since "$lookback" --numstat --pretty=format: $git_path | \
     grep -v '^$' | \
     awk "$file_to_num" | \
-    sort -k2,2nr
+    sort -k2,2nr > $FILE_LIST)
+
+printf "files = {\n" > files.js
+awk '{printf "  \"%s\": {\"churn\":%d, \"commits\":%d},\n", $1, $2, $3}' $FILE_LIST >> files.js
+printf "};" >> files.js
+
+sed -e "s/{{commit_mid}}/$commit_mid/" \
+    -e "s/{{commit_ceil}}/$commit_ceil/" visvol.tmplt > visvol.html
