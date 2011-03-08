@@ -1,0 +1,12 @@
+#! /bin/sh
+#
+# Convert a file produced by file-churn to a JSON format that can be
+# consumed by Protovis.
+#
+# Usage:
+#
+#  file-churn | to-json-treemap > file-commits-tm.json
+
+printf "files = {\n"
+awk '{printf "  \"%s\": {\"churn\":%d, \"commits\":%d},\n", $1, $2, $3}'
+printf "};"
