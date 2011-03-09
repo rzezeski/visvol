@@ -1,8 +1,8 @@
 <html>
   <head>
     <title>VisVol</title>
-    <script type="text/javascript" src="protovis-d3.2.js"></script>
-    <script type="text/javascript" src="jquery-1.5.1.js"></script>
+    <script type="text/javascript" src="protovis-r3.2.js"></script>
+    <script type="text/javascript" src="jquery-1.5.1.min.js"></script>
     <script type="text/javascript" src="files.js"></script>
   </head>
   <body>
