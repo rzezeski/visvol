@@ -2,10 +2,12 @@
   <head>
     <title>VisVol</title>
     <script type="text/javascript" src="protovis-d3.2.js"></script>
+    <script type="text/javascript" src="jquery-1.5.1.js"></script>
     <script type="text/javascript" src="files.js"></script>
   </head>
   <body>
     <div id="center"><div id="fig">
+    <div id="info"> </div>
     <div id="title"></div>
     <script type="text/javascript+protovis">
 
@@ -24,11 +26,19 @@
       .nodes(nodes)
       .round(true);
 
+      function setInfo(d) {
+        $("div#info").html("<p>" + d.nodeName + " - " +
+          d.nodeValue.churn + " - " +
+          d.nodeValue.commits + "</p>");
+      }
+
       treemap.leaf.add(pv.Panel)
       .fillStyle(function(d) pv.Scale.linear(0, {{commit_mid}}, {{commit_ceil}}).range("green", "yellow", "red")(d.nodeValue.commits))
       .strokeStyle("#fff")
       .lineWidth(1)
-      .antialias(false);
+      .antialias(false)
+      .title(function(d) d.nodeName)
+      .event("mouseover", setInfo);
 
       //only label the top 10
       treemap.label.add(pv.Label)
