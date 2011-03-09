@@ -4,11 +4,15 @@
     <script type="text/javascript" src="protovis-r3.2.js"></script>
     <script type="text/javascript" src="jquery-1.5.1.min.js"></script>
     <script type="text/javascript" src="files.js"></script>
+    <style type="text/css">
+      #footer {
+      font: 18pt helvetica neue;
+      color: #333;
+      }
+    </style>
   </head>
   <body>
     <div id="center"><div id="fig">
-    <div id="info"> </div>
-    <div id="title"></div>
     <script type="text/javascript+protovis">
 
       var nodes = pv.dom(files)
@@ -27,9 +31,8 @@
       .round(true);
 
       function setInfo(d) {
-        $("div#info").html("<p>" + d.nodeName + " - " +
-          d.nodeValue.churn + " - " +
-          d.nodeValue.commits + "</p>");
+        $("div#footer").html("<span>" + d.nodeName + " " +
+          d.nodeValue.churn + " - " + d.nodeValue.commits + "</span>" );
       }
 
       treemap.leaf.add(pv.Panel)
@@ -40,11 +43,8 @@
       .title(function(d) d.nodeName)
       .event("mouseover", setInfo);
 
-      //only label the top 10
-      treemap.label.add(pv.Label)
-      .text(function(d) d.index > 10 ? "" : d.nodeName);
-
       vis.render();
     </script>
+    <div id="footer"></div>
   </div></div></body>
 </html>
