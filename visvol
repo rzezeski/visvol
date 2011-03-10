@@ -89,7 +89,7 @@ END {
 # map file to churn
 # sort by most churn
 (cd $path && \
-    git log --since "$lookback" --numstat --pretty=format: $git_paths | \
+    git log --since="$lookback" --numstat --pretty=format: $git_paths | \
     grep -v '^$' | \
     awk "$file_to_num" | \
     sort -k2,2nr > $FILE_LIST)
