@@ -1,9 +1,15 @@
 <html>
   <head>
     <title>VisVol</title>
-    <script type="text/javascript" src="protovis-r3.2.js"></script>
-    <script type="text/javascript" src="jquery-1.5.1.min.js"></script>
-    <script type="text/javascript" src="files.js"></script>
+    <script type="text/javascript">
+      //-jquery_script
+    </script>
+    <script type="text/javascript">
+      //-protovis_script
+    </script>
+    <script type="text/javascript">
+      //-files_json
+    </script>
     <style type="text/css">
       #footer {
       font: 18pt helvetica neue;

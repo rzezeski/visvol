@@ -32,12 +32,13 @@ version()
 PROGRAM=$(basename $0)
 VERSION=0.1.0
 FILE_LIST=$(mktemp /tmp/$PROGRAM.XXXX)
+FILE_JSON=$(mktemp /tmp/$PROGRAM.json.XXXX)
 lookback="6 months ago"
 commit_ceil=12
 path=.
 git_paths=
 
-trap "rm -f $FILE_LIST" EXIT
+trap "rm -f $FILE_LIST $FILE_JSON" EXIT
 
 while test "$#" -gt 0
 do
@@ -94,9 +95,12 @@ END {
     awk "$file_to_num" | \
     sort -k2,2nr > $FILE_LIST)
 
-printf "files = {\n" > files.js
-awk '{printf "  \"%s\": {\"churn\":%d, \"commits\":%d},\n", $1, $2, $3}' $FILE_LIST >> files.js
-printf "};" >> files.js
+printf "files = {\n" > $FILE_JSON
+awk '{printf "  \"%s\": {\"churn\":%d, \"commits\":%d},\n", $1, $2, $3}' $FILE_LIST >> $FILE_JSON
+printf "};" >> $FILE_JSON
 
 sed -e "s/{{commit_mid}}/$commit_mid/" \
-    -e "s/{{commit_ceil}}/$commit_ceil/" visvol.tmplt
+    -e "s/{{commit_ceil}}/$commit_ceil/" \
+    -e "\://-jquery_script:r jquery-1.5.1.min.js" \
+    -e "\://-protovis_script:r protovis-r3.2.js" \
+    -e "\://-files_json:r $FILE_JSON" visvol.tmplt
