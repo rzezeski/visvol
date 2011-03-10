@@ -37,6 +37,4 @@ Getting Started
 
 4. `./visvol /path/to/git/repo > repo-visvol.html`
 
-5. `open visvol.html`
-
-
+5. `open repo-visvol.html`
