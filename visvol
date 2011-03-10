@@ -5,6 +5,7 @@
 # 
 #- usage:
 #-   visvol [ --help ]
+#-          [ --version ]
 #-          [ --lookback <lookback> ]
 #-          [ --commit-ceil <commit-ceil> ]
 #-          [ --git-path <git-path> ]
@@ -24,7 +25,8 @@ error()
 
 version()
 {
-    echo "$PROGRAM version $VERSION"
+    echo "$PROGRAM $VERSION"
+    exit 0
 }
 
 PROGRAM=$(basename $0)
@@ -42,6 +44,9 @@ do
     case $1 in
         --help)
             usage_and_exit 0
+            ;;
+        --version | -V)
+            version
             ;;
         --lookback)
             shift
