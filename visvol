@@ -1,8 +1,7 @@
 #! /bin/bash
 #
-# Generate list of files modified in last 6 motnhs along with their
-# churn and commit count.  By default all files will be included.
-# Only works with git.
+# Generate a protovis graphic that shows the amount of volatility in
+# the given codebase.  It only works with git.
 # 
 #- usage:
 #-   visvol [ --help ]
@@ -95,4 +94,4 @@ awk '{printf "  \"%s\": {\"churn\":%d, \"commits\":%d},\n", $1, $2, $3}' $FILE_L
 printf "};" >> files.js
 
 sed -e "s/{{commit_mid}}/$commit_mid/" \
-    -e "s/{{commit_ceil}}/$commit_ceil/" visvol.tmplt > visvol.html
+    -e "s/{{commit_ceil}}/$commit_ceil/" visvol.tmplt
