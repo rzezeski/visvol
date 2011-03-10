@@ -6,7 +6,6 @@
 # 
 #- usage:
 #-   visvol [ --help ]
-#-          [ -s <suffix> ]
 #-          [ --lookback <lookback> ]
 #-          [ --commit-ceil <commit-ceil> ]
 #-          [ --git-path <git-path> ]
@@ -34,9 +33,8 @@ VERSION=0.1.0
 FILE_LIST=$(mktemp /tmp/$PROGRAM.XXXX)
 lookback="6 months ago"
 commit_ceil=12
-suffix='.*'
 path=.
-git_path=
+git_paths=
 
 trap "rm -f $FILE_LIST" EXIT
 
@@ -46,10 +44,6 @@ do
         --help)
             usage_and_exit 0
             ;;
-        --suffix | -s)
-            shift
-            suffix=$1
-            ;;
         --lookback)
             shift
             lookback=$1
@@ -58,9 +52,14 @@ do
             shift
             commit_ceil=$1
             ;;
-        --git-path )
+        --git-path | -g )
             shift
-            git_path="-- $1"
+            if ! test "$git_paths"
+            then
+                git_paths="-- $1"
+            else
+                git_paths="$git_paths $1"
+            fi
             ;;
         -*)
             error "Unrecognized option: $1"
@@ -86,7 +85,7 @@ END {
 # map file to churn
 # sort by most churn
 (cd $path && \
-    git log --since "$lookback" --numstat --pretty=format: $git_path | \
+    git log --since "$lookback" --numstat --pretty=format: $git_paths | \
     grep -v '^$' | \
     awk "$file_to_num" | \
     sort -k2,2nr > $FILE_LIST)
