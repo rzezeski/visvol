@@ -24,7 +24,6 @@
       var nodes = pv.dom(files)
                    .leaf(function(l) l.commits ? true : false)
                    .root("files").nodes();
-      console.log(nodes);
 
       var vis = new pv.Panel()
       .width(860)
