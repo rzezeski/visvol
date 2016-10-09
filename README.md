@@ -1,4 +1,6 @@
 [Vis]ible [Vol]atility
+
+![](visvol-screenshot.png)
 ==========
 
 This project is a reaction to the article "Software Volatility" in the
@@ -35,6 +37,6 @@ Getting Started
 
 3. `make` (only need to do this once)
 
-4. `./visvol /path/to/git/repo > repo-visvol.html`
+4. `./visvol --lookback 2000 . > repo-visvol.html`
 
 5. `open repo-visvol.html`
